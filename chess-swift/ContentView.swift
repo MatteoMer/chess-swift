@@ -8,9 +8,30 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @State private var gameState = GameState()
     @State private var showGameOverSheet = false
     @State private var showResignConfirmation = false
+
+    private var backgroundColor: LinearGradient {
+        if colorScheme == .dark {
+            return LinearGradient(
+                colors: [Color(red: 0.12, green: 0.12, blue: 0.16), Color(red: 0.08, green: 0.08, blue: 0.12)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        } else {
+            return LinearGradient(
+                colors: [Color(red: 0.95, green: 0.95, blue: 0.97), Color(red: 0.88, green: 0.88, blue: 0.92)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+    }
+
+    private var textColor: Color {
+        colorScheme == .dark ? .white : Color(red: 0.2, green: 0.2, blue: 0.25)
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -19,12 +40,8 @@ struct ContentView: View {
 
             ZStack {
                 // Background gradient
-                LinearGradient(
-                    colors: [Color(red: 0.15, green: 0.15, blue: 0.2), Color(red: 0.1, green: 0.1, blue: 0.15)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
+                backgroundColor
+                    .ignoresSafeArea()
 
                 if isLandscape {
                     landscapeLayout(boardSize: min(geometry.size.height - 40, geometry.size.width * 0.5))
@@ -161,7 +178,7 @@ struct ContentView: View {
             Text("Chess")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .foregroundStyle(.white)
+                .foregroundStyle(textColor)
 
             Spacer()
         }
