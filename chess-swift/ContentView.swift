@@ -103,7 +103,7 @@ struct ContentView: View {
 
     @ViewBuilder
     private func portraitLayout(boardSize: CGFloat) -> some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             // Header
             headerView
 
@@ -117,10 +117,10 @@ struct ContentView: View {
 
             // Move history
             MoveHistoryView(moveRecords: gameState.moveRecords)
-                .frame(maxHeight: 150)
+                .frame(minHeight: 80, maxHeight: 150)
                 .padding(.horizontal)
 
-            Spacer()
+            Spacer(minLength: 0)
 
             // Action buttons
             actionButtons

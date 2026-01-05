@@ -12,34 +12,36 @@ struct MoveHistoryView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Move History")
-                .font(.headline)
-                .padding(.horizontal)
+            HStack {
+                Text("Move History")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+
+                Spacer()
+
+                if !moveRecords.isEmpty {
+                    Text("\(moveRecords.count) move\(moveRecords.count == 1 ? "" : "s")")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(.horizontal)
 
             if moveRecords.isEmpty {
                 Text("No moves yet")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .padding(.horizontal)
-                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity, minHeight: 30, alignment: .leading)
             } else {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 4) {
-                            ForEach(moveRecords) { record in
-                                MoveRecordRow(record: record)
-                                    .id(record.id)
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
-                    .onChange(of: moveRecords.count) { _, _ in
-                        if let lastRecord = moveRecords.last {
-                            withAnimation {
-                                proxy.scrollTo(lastRecord.id, anchor: .bottom)
-                            }
+                ScrollView(.vertical, showsIndicators: true) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        ForEach(moveRecords) { record in
+                            MoveRecordRow(record: record)
                         }
                     }
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
