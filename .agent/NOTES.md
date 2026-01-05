@@ -58,3 +58,18 @@
 - All UI is reactive with SwiftUI
 - Board uses 0-7 indexing (row 0 = black back rank)
 - Coordinate system: (row, col) where row 7 is white's first rank
+
+### Verification Summary (2026-01-05)
+All features verified working in iOS Simulator (iPhone 17 Pro):
+- ✅ Chess board rendering with correct piece positions
+- ✅ Piece selection with yellow highlight
+- ✅ Legal move indicators (green dots for moves, rings for captures)
+- ✅ Move execution with turn alternation
+- ✅ Last move highlighting (yellow/beige on from/to squares)
+- ✅ Turn indicator updates (white circle for white, filled black for black)
+- ✅ Move history in algebraic notation
+- ✅ New Game button resets board
+- ✅ Resign button shows confirmation dialog
+- ✅ Dark mode support with proper theme adaptation
+- ✅ Light mode support
+- ✅ Haptic feedback on moves

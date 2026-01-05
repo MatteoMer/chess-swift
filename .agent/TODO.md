@@ -2,6 +2,9 @@
 
 ## Status: Complete ✅
 
+## TODO:
+Find the position of the e2 pawn and write it in .agent/POSITIONS.md. write any position in this file to help future iterations
+
 ## Completed Features
 - [x] Create project structure and agent tracking files
 - [x] Implement chess game model (board, pieces, rules)
