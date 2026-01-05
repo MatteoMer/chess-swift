@@ -9,10 +9,52 @@
 
 ### Design Decisions
 1. **Architecture**: Using MVVM pattern with SwiftUI
-2. **Piece Rendering**: Using SF Symbols for chess pieces (chess.* symbols available in iOS 14+)
+2. **Piece Rendering**: Using Unicode chess symbols (♔♕♖♗♘♙ / ♚♛♜♝♞♟)
 3. **State Management**: Using @Observable class for game state
 4. **Board Orientation**: White always at bottom (rows 0-1 for black, rows 6-7 for white in internal representation)
 
+### Implementation Summary
+
+#### Models
+- `Piece.swift` - Piece types and colors with Unicode representations
+- `Position.swift` - Board positions with algebraic notation conversion
+- `Move.swift` - Move representation with special move types
+- `Board.swift` - 8x8 board state with piece placement
+
+#### Game Logic
+- `MoveValidator.swift` - Full legal move validation for all piece types
+- `GameState.swift` - Complete game state management with turn tracking
+
+#### Views
+- `ChessBoardView.swift` - Main chess board rendering
+- `SquareView.swift` - Individual square with highlighting
+- `PieceView.swift` - Piece rendering with shadows
+- `GameInfoView.swift` - Turn indicator and captured pieces
+- `MoveHistoryView.swift` - Scrollable move notation
+- `GameOverView.swift` - End game overlay
+- `PawnPromotionView.swift` - Promotion piece selection
+- `Theme.swift` - Consistent color palette
+
+#### Features Implemented
+- All standard chess piece movements
+- Castling (both sides)
+- En passant
+- Pawn promotion with UI
+- Check and checkmate detection
+- Stalemate detection
+- Legal move highlighting
+- Last move highlighting
+- Check highlighting
+- Turn indicator
+- Captured pieces display
+- Move history in algebraic notation
+- Game over screen
+- New game and resign options
+- Haptic feedback
+- Light/dark mode support
+
 ### Technical Notes
-- iOS 14+ has chess SF Symbols: chess.king, chess.queen, chess.rook, chess.knight, chess.bishop, chess.pawn
-- These can be filled for one color and outlined for the other
+- Using Swift 6 with strict concurrency checking
+- All UI is reactive with SwiftUI
+- Board uses 0-7 indexing (row 0 = black back rank)
+- Coordinate system: (row, col) where row 7 is white's first rank
