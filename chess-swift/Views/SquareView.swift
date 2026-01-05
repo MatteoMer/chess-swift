@@ -19,25 +19,16 @@ struct SquareView: View {
     let size: CGFloat
     let onTap: () -> Void
 
-    // Board colors
-    private let lightSquareColor = Color(red: 240/255, green: 217/255, blue: 181/255)
-    private let darkSquareColor = Color(red: 181/255, green: 136/255, blue: 99/255)
-    private let selectedColor = Color.yellow.opacity(0.5)
-    private let lastMoveColor = Color.yellow.opacity(0.3)
-    private let checkColor = Color.red.opacity(0.6)
-    private let legalMoveColor = Color.green.opacity(0.4)
+    private var baseColor: Color {
+        position.isLightSquare ? ChessTheme.lightSquare : ChessTheme.darkSquare
+    }
 
     private var backgroundColor: Color {
-        let baseColor = position.isLightSquare ? lightSquareColor : darkSquareColor
-
         if isInCheck {
-            return checkColor
+            return ChessTheme.checkHighlight
         }
         if isSelected {
-            return selectedColor
-        }
-        if isLastMoveFrom || isLastMoveTo {
-            return baseColor.opacity(0.7).blend(with: lastMoveColor)
+            return ChessTheme.selectedSquare
         }
         return baseColor
     }
@@ -49,32 +40,35 @@ struct SquareView: View {
                 Rectangle()
                     .fill(backgroundColor)
 
-                // Last move highlight
+                // Last move highlight overlay
                 if isLastMoveFrom || isLastMoveTo {
                     Rectangle()
-                        .fill(lastMoveColor)
+                        .fill(ChessTheme.lastMoveHighlight)
                 }
 
                 // Legal move indicator
                 if isLegalMove {
-                    if isCapture {
-                        // Capture indicator - corner triangles
-                        CaptureIndicator()
-                            .fill(legalMoveColor)
+                    if isCapture || piece != nil {
+                        // Capture indicator - ring around piece
+                        Circle()
+                            .strokeBorder(ChessTheme.captureIndicator, lineWidth: size * 0.08)
+                            .frame(width: size * 0.85, height: size * 0.85)
                     } else {
                         // Regular move - dot
                         Circle()
-                            .fill(Color.black.opacity(0.2))
-                            .frame(width: size * 0.3, height: size * 0.3)
+                            .fill(ChessTheme.legalMoveIndicator)
+                            .frame(width: size * 0.35, height: size * 0.35)
                     }
                 }
 
-                // Piece
+                // Piece with animation
                 if let piece = piece {
                     PieceView(piece: piece, size: size)
+                        .scaleEffect(isSelected ? 1.05 : 1.0)
+                        .animation(.easeInOut(duration: 0.15), value: isSelected)
                 }
 
-                // Coordinate labels (optional - for corner squares only)
+                // Coordinate labels
                 coordinateLabels
             }
         }
@@ -84,7 +78,7 @@ struct SquareView: View {
 
     @ViewBuilder
     private var coordinateLabels: some View {
-        let textColor = position.isLightSquare ? darkSquareColor : lightSquareColor
+        let textColor = position.isLightSquare ? ChessTheme.darkSquare : ChessTheme.lightSquare
 
         // File letter on bottom row (row 7)
         if position.row == 7 {
@@ -116,47 +110,6 @@ struct SquareView: View {
     }
 }
 
-// Capture indicator shape
-struct CaptureIndicator: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let cornerSize = rect.width * 0.25
-
-        // Top-left corner
-        path.move(to: CGPoint(x: 0, y: 0))
-        path.addLine(to: CGPoint(x: cornerSize, y: 0))
-        path.addLine(to: CGPoint(x: 0, y: cornerSize))
-        path.closeSubpath()
-
-        // Top-right corner
-        path.move(to: CGPoint(x: rect.width, y: 0))
-        path.addLine(to: CGPoint(x: rect.width - cornerSize, y: 0))
-        path.addLine(to: CGPoint(x: rect.width, y: cornerSize))
-        path.closeSubpath()
-
-        // Bottom-left corner
-        path.move(to: CGPoint(x: 0, y: rect.height))
-        path.addLine(to: CGPoint(x: cornerSize, y: rect.height))
-        path.addLine(to: CGPoint(x: 0, y: rect.height - cornerSize))
-        path.closeSubpath()
-
-        // Bottom-right corner
-        path.move(to: CGPoint(x: rect.width, y: rect.height))
-        path.addLine(to: CGPoint(x: rect.width - cornerSize, y: rect.height))
-        path.addLine(to: CGPoint(x: rect.width, y: rect.height - cornerSize))
-        path.closeSubpath()
-
-        return path
-    }
-}
-
-// Color blending extension
-extension Color {
-    func blend(with color: Color) -> Color {
-        // Simple blend implementation
-        return self.opacity(0.7)
-    }
-}
 
 #Preview {
     VStack {
